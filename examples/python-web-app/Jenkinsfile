@@ -1,0 +1,52 @@
+pipeline {
+  agent any
+
+  environment {
+    IMAGE_TAG = "${BUILD_NUMBER}"
+  }
+
+  stages {
+    stage ('Checkout') {
+      steps {
+        git credentialsId: '184b2aa9-6a9a-418f-aca3-11268b2abda8', 
+        url: 'https://github.com/shree1434/Docker-Zero-To-Hero',
+        branch: 'main'
+      }
+    }
+
+    stage ('Build Docker') {
+      steps {
+        script {
+            sh '''
+            echo 'Build Docker Image'
+            docker build -t shree1434/new-repo:${IMAGE_TAG} -f examples/python-web-app/Dockerfile .
+            '''
+        }
+      }
+    }
+
+    stage ('Push Docker Image') {
+      steps {
+        script {
+            sh '''
+            echo 'Push the docker image to repo'
+            docker push shree1434/new-repo:${IMAGE_TAG}
+            '''
+        }
+      }
+    }
+
+    stage ('Deploy to Docker') {
+      steps {
+        script {
+            sh '''
+            echo 'Deploying to Docker'
+            docker stop new-app || true
+            docker rm new-app || true
+            docker run -d --name new-app -p 8000:8000 shree1434/new-repo:${IMAGE_TAG}
+            '''
+        }
+      }
+    }
+  }
+}
