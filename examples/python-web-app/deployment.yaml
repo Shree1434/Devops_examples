@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-python-deployment
+  labels:
+    app: sample-python-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sample-python-deployment
+  template:
+    metadata:
+      labels:
+        app: sample-python-deployment
+    spec:
+      containers:
+      - name: python-web-app
+        image: shree1434/demo:new
+        ports:
+        - containerPort: 8000
