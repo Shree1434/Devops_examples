@@ -4,7 +4,7 @@ FROM ubuntu
 WORKDIR /app
 
 # Copy the requirements.txt file from the host into the container
-COPY examples/python-web-app/requirements.txt /app
+COPY requirements.txt /app
 
 # Install Python 3 and pip
 RUN apt-get update && \
@@ -13,10 +13,7 @@ RUN apt-get update && \
     pip3 install -r requirements.txt
 
 # Copy the devops directory from the host into the container
-COPY examples/python-web-app/devops /app/devops
-
-# Change the current directory to devops
-WORKDIR /app/devops
+COPY devops /app
 
 # Set the entry point for the container
 ENTRYPOINT ["python3"]
